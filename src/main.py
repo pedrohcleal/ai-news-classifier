@@ -46,8 +46,11 @@ def scrape_google_news(keyword, num_pages=3) -> list[dict]:
 
 def main_scrape():
     empresas = ["Komatsu", "Votorantim Cimentos", "Haribo"]
+    empresas = input('inserir empresas, exemplo: Microsoft, Ford, XP Investimentos')
+    
+    empresas = empresas.split(',')
     resultados = []
-    num_pages = 10
+    num_pages = int(input('inserir quantidade de páginas a serem procuradas'))
     
     for brand in empresas:
         curr_dados = scrape_google_news(brand, num_pages=num_pages)
