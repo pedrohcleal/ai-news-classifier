@@ -1,13 +1,12 @@
 from pprint import pprint
 from bs4 import BeautifulSoup
-import time
 import pandas as pd
-from playwright.sync_api import sync_playwright, Page
-from utils import ia_utils, page_utils, utils
+from .utils import utils
 from config.scraper_configs import cloud_scraper, HEADERS
+from .utils import utils
 
-    
-def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
+
+def scrape_google_news(keyword, num_pages=3) -> list[dict]:
     all_results = []
 
     for pag_n in range(num_pages):
@@ -31,7 +30,6 @@ def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
             title = title_tag.text if title_tag else "Título não encontrado"
             description = desc_tag.text if desc_tag else "Descrição não encontrada"
             dt_pub = dt_pub_tag.text if dt_pub_tag else "Data não encontrada"
-            #page_text = page_utils.get_all_txt(href, page)
             
             result = {
                 "empresa": keyword, 
@@ -39,37 +37,28 @@ def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
                 "titulo": title,
                 "descrição": description,
                 "dt_pub_noticia": utils.dt_ref_to_isodt(dt_pub),
-                "sense_title": ia_utils.get_sentiment_pt(title),
-                "sense_description": ia_utils.get_sentiment_pt(description),
-            #    "sense_text_link": ia_utils.get_sentiment_pt(page_text),
-                "class_title": ia_utils.get_classify_pt(title),
-                "class_description": ia_utils.get_classify_pt(description),
-            #    "class_text_link": ia_utils.get_classify_pt(page_text)
+                "sense_title": utils.get_sentiment_pt(title),
+                "sense_description": utils.get_sentiment_pt(description),
+                "class_title": utils.get_classify_pt(title),
+                "class_description": utils.get_classify_pt(description),
             }
-            #pprint(result)
             all_results.append(result)
-            #break
-        time.sleep(1)
     return all_results
 
 def main_scrape():
     empresas = ["Komatsu", "Votorantim Cimentos", "Haribo"]
     resultados = []
+    num_pages = 10
+    
+    for brand in empresas:
+        curr_dados = scrape_google_news(brand, num_pages=num_pages)
+        resultados.extend(curr_dados)
+        
     import json
-    
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
-        context = browser.new_context()
-        page = context.new_page()
-        for brand in empresas:
-            curr_dados = scrape_google_news(brand, page, num_pages=10)
-            resultados.extend(curr_dados)
-        browser.close()
-    
-    with open('analises_2.json', 'w') as f:
+    with open('analises.json', 'w') as f:
         json.dump(resultados,f,ensure_ascii=False,indent=4)
     
     df = pd.DataFrame(resultados)
-    df.to_excel('analises_2.xlsx', index=False)
+    df.to_excel('analises.xlsx', index=False)
 
 main_scrape()
