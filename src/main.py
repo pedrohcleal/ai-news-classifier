@@ -11,14 +11,13 @@ def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
     all_results = []
 
     for pag_n in range(num_pages):
+        
         start = pag_n * 10
         url = f"https://www.google.com/search?q={keyword}&tbm=nws&start={start}"
+        print(f"\n Página {pag_n + 1} - {url}")
 
         response = cloud_scraper.get(url, headers=HEADERS, timeout=90)
         soup = BeautifulSoup(response.text, "html.parser")
-
-        print(f"\n Página {pag_n + 1} - {url}")
-        
         news = soup.select(".WlydOe")
 
         for ind, article in enumerate(news):
@@ -32,7 +31,7 @@ def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
             title = title_tag.text if title_tag else "Título não encontrado"
             description = desc_tag.text if desc_tag else "Descrição não encontrada"
             dt_pub = dt_pub_tag.text if dt_pub_tag else "Data não encontrada"
-            page_text = page_utils.get_all_txt(href, page)
+            #page_text = page_utils.get_all_txt(href, page)
             
             result = {
                 "empresa": keyword, 
@@ -40,12 +39,12 @@ def scrape_google_news(keyword, page: Page, num_pages=3) -> list[dict]:
                 "titulo": title,
                 "descrição": description,
                 "dt_pub_noticia": utils.dt_ref_to_isodt(dt_pub),
-                "sense_title": ia_utils.get_sentiment_pt(title)[0],
-                "sense_description": ia_utils.get_sentiment_pt(description)[0],
-                "sense_text_link": ia_utils.get_sentiment_pt(page_text)[0],
+                "sense_title": ia_utils.get_sentiment_pt(title),
+                "sense_description": ia_utils.get_sentiment_pt(description),
+            #    "sense_text_link": ia_utils.get_sentiment_pt(page_text),
                 "class_title": ia_utils.get_classify_pt(title),
                 "class_description": ia_utils.get_classify_pt(description),
-                "class_text_link": ia_utils.get_classify_pt(page_text)
+            #    "class_text_link": ia_utils.get_classify_pt(page_text)
             }
             #pprint(result)
             all_results.append(result)
