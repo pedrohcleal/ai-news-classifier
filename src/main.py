@@ -1,9 +1,8 @@
 from pprint import pprint
 from bs4 import BeautifulSoup
 import pandas as pd
-from .utils import utils
 from config.scraper_configs import cloud_scraper, HEADERS
-from .utils import utils
+from utils import utils
 
 
 def scrape_google_news(keyword, num_pages=3) -> list[dict]:
