@@ -70,28 +70,27 @@ def plot_empresa(empresa):
     plt.show()
 
     # ---------- Frequência mensal histórica para class_description ----------
-    # df_desc_freq = df_empresa.groupby(['mes', 'class_description']).size().reset_index(name='frequencia')
-    # df_desc_freq['mes'] = df_desc_freq['mes'].astype(str)
-    # pivot_desc = df_desc_freq.pivot(index='mes', columns='class_description', values='frequencia').fillna(0)
+    df_desc_freq = df_empresa.groupby(['mes', 'class_description']).size().reset_index(name='frequencia')
+    df_desc_freq['mes'] = df_desc_freq['mes'].astype(str)
+    pivot_desc = df_desc_freq.pivot(index='mes', columns='class_description', values='frequencia').fillna(0)
 
-    # classes_desc = pivot_desc.columns.tolist()
-    # n_classes_desc = len(classes_desc)
-    # colors_desc = cm.get_cmap('tab20', n_classes_desc)
+    classes_desc = pivot_desc.columns.tolist()
+    n_classes_desc = len(classes_desc)
+    colors_desc = cm.get_cmap('tab20', n_classes_desc)
 
-    # plt.figure(figsize=size)
-    # for i, cls in enumerate(classes_desc):
-    #     plt.plot(pivot_desc.index, pivot_desc[cls], marker='o', label=cls, color=colors_desc(i))
-    # plt.title(f'Frequência mensal de categorias da descrição de notícias para {empresa}')
-    # plt.xlabel('Mês')
-    # plt.ylabel('Frequência da categoria')
-    # plt.xticks(rotation=45)
-    # plt.legend(title='Class Description', bbox_to_anchor=(1.05, 1), loc='upper left')
-    # plt.grid(True)
-    # plt.tight_layout()
-    # plt.show()
+    plt.figure(figsize=size)
+    for i, cls in enumerate(classes_desc):
+        plt.plot(pivot_desc.index, pivot_desc[cls], marker='o', label=cls, color=colors_desc(i))
+    plt.title(f'Frequência mensal de categorias da descrição de notícias para {empresa}')
+    plt.xlabel('Mês')
+    plt.ylabel('Frequência da categoria')
+    plt.xticks(rotation=45)
+    plt.legend(title='Class Description', bbox_to_anchor=(1.05, 1), loc='upper left')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
 
 
-# Gerar gráficos para cada empresa
 for empresa in empresas:
     print(f"\nAnálise para a empresa: {empresa}")
     plot_empresa(empresa)

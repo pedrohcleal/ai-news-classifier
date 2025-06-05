@@ -7,6 +7,8 @@ venv/
 *.so
 /venv
 .env
+*.json
+*.xlsx
 # Distribution / packaging
 .Python
 build/
