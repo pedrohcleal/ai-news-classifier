@@ -20,14 +20,11 @@ def get_sentiment_pt(txt_pt):
     result = news_sentiment(txt_en)
     starts: str = result[0]['label']
     n_starts = int(starts.split(' ')[0])
-        
-    print(f'Sense: {n_starts}')
     return n_starts
 
 def get_classify_pt(txt_pt):
     txt_en = translate_pt_to_en(txt_pt)
     resultado = news_classifier(txt_en)
-    print(f'class = {resultado[0]["label"]}')
     return translate_en_to_pt(resultado[0]["label"])
 
 
